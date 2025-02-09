@@ -1,5 +1,8 @@
+let currentIndex = 0;
+let imageElements = [];
+
 async function loadImages() {
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWjRJYiNBSCZCOpUOdvrFxrQbMn8tDjEIi1Z99VhS_iaoKt5MdZL_UnLVSezhkNaJiQMTbr3ZBmW8O/pub?gid=0&single=true&output=csv"; // Replace with your GitHub Pages CSV link
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWjRJYiNBSCZCOpUOdvrFxrQbMn8tDjEIi1Z99VhS_iaoKt5MdZL_UnLVSezhkNaJiQMTbr3ZBmW8O/pub?gid=0&single=true&output=csv"; // Replace with your Google Sheets CSV link
     const corsProxy = "https://api.allorigins.win/get?url="; // Alternative CORS proxy URL
     try {
         const response = await fetch(corsProxy + encodeURIComponent(sheetURL));
@@ -16,12 +19,13 @@ async function loadImages() {
         console.log("Image URLs:", imageURLs); // Log the extracted image URLs
 
         const gallery = document.getElementById("gallery");
-        imageURLs.forEach(url => {
+        imageURLs.forEach((url, index) => {
             if (url) {
                 console.log(`Loading image: ${url}`); // Debug log
 
                 let imgWrapper = document.createElement("div");
                 imgWrapper.className = "photo-container";
+                imgWrapper.style.display = index === 0 ? "flex" : "none"; // Show the first image initially
 
                 // Image Element
                 let imgElement = document.createElement("img");
@@ -30,41 +34,17 @@ async function loadImages() {
                 imgElement.loading = "lazy";
                 imgElement.onerror = () => console.error(`Failed to load image: ${url}`); // Log error if image fails to load
 
-                // Button to toggle dropdown visibility
-                let button = document.createElement("button");
-                button.className = "details-button";
-                button.innerText = "View Details";
-                button.onclick = () => toggleDropdown(button);
-
-                // Dropdown for metadata
-                let dropdown = document.createElement("div");
-                dropdown.className = "photo-info-dropdown";
-                dropdown.style.display = "none";  // Initially hidden
-
-                // Add EXIF data to the dropdown (this will be extracted later)
-                EXIF.getData(imgElement, function() {
-                    let camera = EXIF.getTag(this, "Make") + " " + EXIF.getTag(this, "Model");
-                    let exposure = EXIF.getTag(this, "ExposureTime");
-                    let aperture = EXIF.getTag(this, "FNumber");
-                    let iso = EXIF.getTag(this, "ISOSpeedRatings");
-                    let date = EXIF.getTag(this, "DateTimeOriginal");
-
-                    dropdown.innerHTML = `
-                        <strong>Date: </strong> ${date}<br>
-                        <strong>Camera: </strong> ${camera}<br>
-                        <strong>Exposure: </strong> ${exposure}s<br>
-                        <strong>F-Stop: </strong> f/${aperture}<br>
-                        <strong>ISO: </strong> ${iso}
-                    `;
-                });
-
-                // Append the image, button, and dropdown to the wrapper
+                // Append the image to the wrapper
                 imgWrapper.appendChild(imgElement);
-                imgWrapper.appendChild(button);
-                imgWrapper.appendChild(dropdown);
 
                 // Add the image wrapper to the gallery
                 gallery.appendChild(imgWrapper);
+
+                // Add the image element to the array
+                imageElements.push(imgWrapper);
+
+                // Call function to adjust container size after image loads
+                imgElement.onload = () => adjustContainerSize(imgWrapper, imgElement);
             }
         });
     } catch (error) {
@@ -72,14 +52,34 @@ async function loadImages() {
     }
 }
 
-// Define the toggleDropdown function
-function toggleDropdown(button) {
-    const dropdown = button.nextElementSibling;
-    if (dropdown.style.display === "none") {
-        dropdown.style.display = "block";
-    } else {
-        dropdown.style.display = "none";
-    }
+
+// Define the function to show the previous image
+function prevImage() {
+    imageElements[currentIndex].style.display = "none";
+    currentIndex = (currentIndex - 1 + imageElements.length) % imageElements.length;
+    imageElements[currentIndex].style.display = "flex";
 }
 
+// Define the function to show the next image
+function nextImage() {
+    imageElements[currentIndex].style.display = "none";
+    currentIndex = (currentIndex + 1) % imageElements.length;
+    imageElements[currentIndex].style.display = "flex";
+}
+
+// Function to adjust padding based on image dimensions
+function adjustPadding(container, img) {
+    let imgWidth = img.naturalWidth;
+    let imgHeight = img.naturalHeight;
+    let aspectRatio = imgWidth / imgHeight;
+
+    // Calculate padding based on image dimensions
+    let paddingValue = Math.max(16, 27 - (aspectRatio - 1.5) * 4);
+    paddingValue = Math.min(paddingValue, 27); // Ensure padding does not exceed 27px
+
+    // Apply padding value to the container
+    container.style.padding = `${paddingValue}px`;
+}
+
+// Load images when page loads
 loadImages();
