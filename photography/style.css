@@ -75,7 +75,8 @@ h1 {
     position: absolute;
     top: 50%;
     width: 3vw;
-    max-width: 100px;
+    min-width: 40px;
+    max-width: 65px;
     padding: 16px;
     margin-top: -22px;
     color: #f9f9f9;
@@ -86,6 +87,7 @@ h1 {
     background-color: rgba(0, 0, 0, 0.5);
     border: none;
     border-radius: 15px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .prev:hover {
@@ -107,29 +109,81 @@ h1 {
     scale: 110%;
     background-color: rgba(0, 0, 0, 0.6);
     transition: background-color 0.7s ease;
-    transition: scale 0.3s ease;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+    transition: scale 0.3s ease, box-shadow  0.3s ease;
 }
 
 .next:hover {
     scale: 110%;
     background-color: rgba(0, 0, 0, 0.6);
     transition: background-color 0.7s ease;
-    transition: scale 0.3s ease;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.3);
+    transition: scale 0.3s ease, box-shadow  0.3s ease;
 
 }
 
 .prev {
     left: 2vw;
     transition: background-color 0.7s ease;
-    transition: scale 0.3s ease;
+    transition: scale 0.3s ease, box-shadow 0.3s ease;
 }
 
 .next {
     right: 2vw;
     transition: background-color 0.7s ease;
-    transition: scale 0.3s ease;
+
+    transition: scale 0.3s ease, box-shadow 0.3s ease;
 }
 
+#image-count{
+    position: absolute;
+    font-family: 'Radio Canada', sans-serif;
+    color: #f9f9f9;
+    font-size: 22px;
+    top: 4vh;
+    right: 7vw;
+}
+
+.details {
+    transform-origin: center;
+    font-family: 'Radio Canada', sans-serif;
+    font-weight: 400;
+    color: #1a1a1a;
+    background-color: #f9f9f9;
+    width: 7vw;           
+    height: 4vw;  
+    max-height: 80px; 
+    max-width: 120px; 
+    min-width: 95px;
+    min-height:60px;       
+    text-align: center;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: width 0.2s, height 0.2s, border-radius 0.3s, font-size 0.3s;
+    position: absolute;
+    bottom: 10vh; /* Adjust this value to control the gap between the button and the container */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.details:hover {
+    width: 8vw;           
+    font-size: 18px;     
+    border-radius: 16px;   
+    transition: width 0.3s, height 0.3s, border-radius 0.3s, font-size 0.3s;
+}
+
+.detailsContent {
+    color: #f9f9f9;
+    font-family: 'Radio Canada', sans-serif;
+    font-size: 18px;
+    bottom: 50px;
+    position: absolute;
+    padding: 20px;
+
+}
 
 
 .photo-container {
@@ -140,10 +194,20 @@ h1 {
     margin: 10px auto;
     background: #f9f9f9;
     padding: 25px; /* make padding dynamic */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
     border-radius: 18px;
     max-height: 66vh;
     max-width: 80vw;
+}
+
+.photo-container:hover {
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.4);
+    padding: 30px; /* make padding dynamic */
+    transition: padding 0.7s ease, box-shadow 0.7s ease;
+}
+
+.photo-container {
+    transition: padding 0.7s ease, box-shadow 0.7s ease;
 }
 
 .photo-container img {
@@ -154,8 +218,7 @@ h1 {
     height: 100%;
     max-height: 66vh;
     max-width: 80vw;
-
 }
 
 
-
+ 

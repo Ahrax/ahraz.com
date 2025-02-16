@@ -1,5 +1,6 @@
 let currentIndex = 0;
 let imageElements = [];
+let detailsVisible = false;
 
 async function loadImages() {
     const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTWjRJYiNBSCZCOpUOdvrFxrQbMn8tDjEIi1Z99VhS_iaoKt5MdZL_UnLVSezhkNaJiQMTbr3ZBmW8O/pub?gid=0&single=true&output=csv"; // Replace with your Google Sheets CSV link
@@ -44,27 +45,20 @@ async function loadImages() {
                 imageElements.push(imgWrapper);
 
                 // Call function to adjust container size after image loads
-                imgElement.onload = () => adjustContainerSize(imgWrapper, imgElement);
+                imgElement.onload = () => adjustPadding(imgWrapper, imgElement);
             }
         });
+
+        // Update dynamic text
+        updateDynamicText();
+        // Show details for the first image
+        updateDetails();
+        // Ensure details are visible from the start
+        detailsVisible = true;
+        document.querySelector(".detailsContent").style.display = "block";
     } catch (error) {
         console.error(`Failed to load images: ${error.message}`);
     }
-}
-
-
-// Define the function to show the previous image
-function prevImage() {
-    imageElements[currentIndex].style.display = "none";
-    currentIndex = (currentIndex - 1 + imageElements.length) % imageElements.length;
-    imageElements[currentIndex].style.display = "flex";
-}
-
-// Define the function to show the next image
-function nextImage() {
-    imageElements[currentIndex].style.display = "none";
-    currentIndex = (currentIndex + 1) % imageElements.length;
-    imageElements[currentIndex].style.display = "flex";
 }
 
 // Function to adjust padding based on image dimensions
@@ -79,6 +73,53 @@ function adjustPadding(container, img) {
 
     // Apply padding value to the container
     container.style.padding = `${paddingValue}px`;
+}
+
+// Function to update dynamic text
+function updateDynamicText() {
+    const dynamicTextElement = document.getElementById("image-count");
+    const totalImages = imageElements.length;
+    const currentImageIndex = currentIndex + 1; // +1 to make it 1-based index
+    dynamicTextElement.textContent = `Showing image ${currentImageIndex} of ${totalImages}`;
+}
+
+// Function to update image details
+function updateDetails() {
+    const imgElement = imageElements[currentIndex].querySelector("img");
+    EXIF.getData(imgElement, function() {
+        const dateTaken = EXIF.getTag(this, "DateTimeOriginal");
+
+        // Format date as dd/mm/yyyy
+        let dateFormatted = "N/A";
+        if (dateTaken) {
+            const dateParts = dateTaken.split(" ")[0].split(":");
+            dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        }
+
+        const detailsContent = document.querySelector(".detailsContent");
+        detailsContent.innerHTML = `
+            <p>${dateFormatted}</p>
+        `;
+    });
+}
+
+
+// Define the function to show the previous image
+function prevImage() {
+    imageElements[currentIndex].style.display = "none";
+    currentIndex = (currentIndex - 1 + imageElements.length) % imageElements.length;
+    imageElements[currentIndex].style.display = "flex";
+    updateDynamicText();
+    updateDetails();
+}
+
+// Define the function to show the next image
+function nextImage() {
+    imageElements[currentIndex].style.display = "none";
+    currentIndex = (currentIndex + 1) % imageElements.length;
+    imageElements[currentIndex].style.display = "flex";
+    updateDynamicText();
+    updateDetails();
 }
 
 // Load images when page loads
