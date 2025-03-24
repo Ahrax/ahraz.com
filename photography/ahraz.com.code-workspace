@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "image-hosting-ahraz-photography",
+			"path": "../../../../Importent stuff/image-hosting-ahraz-photography"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "ahraz.com"
+	}
+}
