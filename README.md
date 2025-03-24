@@ -7,3 +7,4 @@ http://ahraz.com/ and all its directories:
 - /notes(v4): [Buttons Smooth Hover Broken Transition (for both buttons), Social Buttons Changes]
 
 all coded by me in HTML and CSS
+idon'tknowjavascript
